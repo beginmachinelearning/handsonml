@@ -103,6 +103,32 @@ plot_roc_curve(fpr, tpr)
 plt.show()
 
 
+sgd_clf.fit(X_train, y_train)
+sgd_clf.predict([some_digit])
+
+some_digit_scores = sgd_clf.decision_function([some_digit])
+
+
+from sklearn.multiclass import OneVsOneClassifier
+ovo_clf = OneVsOneClassifier(SGDClassifier(random_state=42))
+ovo_clf.fit(X_train, y_train)
+ovo_clf.predict([some_digit])
 
 
 
+from sklearn.ensemble import RandomForestClassifier
+rdf_clf= RandomForestClassifier()
+rdf_clf.fit(X_train, y_train)
+rdf_clf.predict([some_digit])
+
+
+cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring="accuracy")
+
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
+
+
+
+cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")
