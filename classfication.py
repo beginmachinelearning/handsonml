@@ -2,6 +2,7 @@
 
 from sklearn.datasets import fetch_mldata
 mnist = fetch_mldata('MNIST original')
+# For Mac: mnist = fetch_mldata('mnist-original', data_home='/Users/maxim/Python AI/Hands on ML/datasets')
 mnist
 
 X, y = mnist["data"], mnist["target"]
