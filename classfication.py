@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-
-from sklearn.datasets import fetch_mldata
-mnist = fetch_mldata('MNIST original')
-# For Mac: mnist = fetch_mldata('mnist-original', data_home='/Users/maxim/Python AI/Hands on ML/datasets')
+from shiftpixels import *
+from sklearn.datasets.mldata import fetch_mldata
+mnist = fetch_mldata('mnist-original', data_home='/Users/maxim/Python AI/Hands on ML/datasets')
 mnist
 
 X, y = mnist["data"], mnist["target"]
@@ -24,6 +23,8 @@ import numpy as np
 
 shuffle_index = np.random.permutation(60000)
 X_train, y_train = X_train[shuffle_index], y_train[shuffle_index]
+
+
 
 
 y_train_5 = (y_train == 5) 
@@ -130,8 +131,50 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
 
+cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")
 
 
+X_train, X_test, y_train, y_test = X[:60000], X[60000:], y[:60000], y[60000:]
+
+
+X_train_shifted_right=shift_image(X_train, 'right', 1)
+X_train_shifted_left=shift_image(X_train, 'left', 1)
+X_train_shifted_top=shift_image(X_train, 'top', 1)
+X_train_shifted_bottom=shift_image(X_train, 'bottom', 1)
+show_image(X_train_shifted_left[1])
+
+X_train_augmented=np.append(X_train, X_train_shifted_right, axis=0)
+X_train_augmented=np.append(X_train_augmented, X_train_shifted_left, axis=0)
+X_train_augmented=np.append(X_train_augmented, X_train_shifted_top, axis=0)
+X_train_augmented=np.append(X_train_augmented, X_train_shifted_bottom, axis=0)
+
+
+y_train= y[:60000]
+y_train_append=y_train
+y_train=np.append(y_train, y_train_append, axis=0)
+y_train=np.append(y_train, y_train_append, axis=0)
+y_train=np.append(y_train, y_train_append, axis=0)
+y_train=np.append(y_train, y_train_append, axis=0)
+
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train_augmented_scaled = scaler.fit_transform(X_train_augmented.astype(np.float64))
+
+cross_val_score(sgd_clf, X_train_augmented_scaled, y_train, cv=3, scoring="accuracy")
+
+from sklearn.linear_model import SGDClassifier
+sgd_clf_aug = SGDClassifier(random_state=42)
+sgd_clf_aug.fit(X_train_augmented_scaled, y_train)
+
+cross_val_score(sgd_clf, X_train_augmented_scaled, y_train, cv=3, scoring="accuracy")
+
+from sklearn.neighbors import KNeighborsClassifier
+Kn_clf= KNeighborsClassifier()
+Kn_clf.fit(X_train_scaled, y_train)
+Kn_clf.predict([some_digit])
+
+<<<<<<< HEAD
 cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")
 
 
@@ -155,3 +198,6 @@ grid_search = GridSearchCV(kn_clfgrid, param_grid, cv=5, n_jobs=-1,
 grid_search.fit(X_train, y_train)
 
 grid_search.best_params_
+=======
+cross_val_score(Kn_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")
+>>>>>>> 5a0bbe077c3fd884b6226d0596ed6a9da2c9a742
