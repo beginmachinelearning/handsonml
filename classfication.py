@@ -133,3 +133,25 @@ X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
 
 
 cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")
+
+
+
+
+
+
+
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'n_neighbors': [4, 6, 8], 'weights': [ 'uniform', 'distance']
+   
+  }
+
+kn_clfgrid= KNeighborsClassifier()
+
+grid_search = GridSearchCV(kn_clfgrid, param_grid, cv=5, n_jobs=-1,
+                           scoring='neg_mean_squared_error')
+
+grid_search.fit(X_train, y_train)
+
+grid_search.best_params_
